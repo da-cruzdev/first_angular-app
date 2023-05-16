@@ -3,7 +3,25 @@
     {{ title }}
   </h2>
 
-  <button class="btn btn-primary">Afficher nouveau</button>
+  <button class="btn btn-primary d-flex" (click)="toggleIsNewBadge()">
+    <span class="material-icons">
+      {{ showBadge ? "visibility_off" : "visibility" }}
+    </span>
+    <span class="ml-2"> {{ showBadge ? "Cacher" : "Afficher" }} nouveau </span>
+  </button>
+  <hr />
+
+  <div class="my-2">
+    <div class="row">
+      <div class="col-md-4">
+        <span>Filtre actuel:</span>
+        <b>{{ hotelFilter }}</b>
+      </div>
+      <div class="col-md-8 form-group">
+        <input type="text" class="form-control" [(ngModel)]="hotelFilter" />
+      </div>
+    </div>
+  </div>
 
   <div class="row row-cols-1 row-cols-md-3 g-4">
     <div class="col" *ngFor="let hotel of hotels">
@@ -19,7 +37,9 @@
           <p class="card-text">
             {{ hotel.description }}
           </p>
-          <span class="badge badge-pill badge-info">Nouveau</span>
+          <span class="badge badge-pill badge-info" *ngIf="showBadge"
+            >Nouveau</span
+          >
         </div>
       </div>
     </div>

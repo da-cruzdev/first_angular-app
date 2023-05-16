@@ -37,4 +37,10 @@ export class HotelListComponent {
       imageUrl: 'assets/img/window.jpg',
     },
   ];
+
+  public showBadge: boolean | undefined;
+  public hotelFilter = 'mot';
+  public toggleIsNewBadge(): void {
+    this.showBadge = !this.showBadge;
+  }
 }
