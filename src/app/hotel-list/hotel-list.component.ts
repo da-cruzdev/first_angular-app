@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { IHotel } from './hotel';
 
 @Component({
   selector: 'app-hotel-list',
   templateUrl: './hotel-list.component.html',
 })
-export class HotelListComponent {
+export class HotelListComponent implements OnInit {
   public title = 'liste hotels';
 
   public hotels: IHotel[] = [
@@ -41,6 +41,11 @@ export class HotelListComponent {
 
   public showBadge: boolean | undefined;
   public hotelFilter = 'mot';
+
+  ngOnInit(): void {
+    console.log('Mon niveau de vie fonctionne');
+  }
+
   public toggleIsNewBadge(): void {
     this.showBadge = !this.showBadge;
   }
