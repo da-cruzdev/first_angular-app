@@ -19,7 +19,6 @@ export class HotelListComponent implements OnInit {
   public filteredHotels: IHotel[] = [];
 
   constructor(private readonly hotelListService: HotelListService) {}
-
   ngOnInit(): void {
     this.hotels = this.hotelListService.getHotels();
     this.filteredHotels = this.hotels;
