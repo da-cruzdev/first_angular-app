@@ -6,10 +6,10 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
-        <li class="nav-item">
+        <li class="nav-item" routerLinkActive="active">
           <a class="nav-link active" [routerLink]="['/home']">Accueil</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" routerLinkActive="active">
           <a class="nav-link" [routerLink]="['/hotels']">Liste</a>
         </li>
       </ul>
@@ -17,5 +17,6 @@
   </div>
 </nav>
 
-<div class="mt-5"></div>
+<div class="mt-5 mb-5"></div>
+
 <router-outlet></router-outlet>
