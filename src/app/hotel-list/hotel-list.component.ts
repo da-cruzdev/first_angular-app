@@ -63,6 +63,8 @@ export class HotelListComponent implements OnInit {
     return this._hotelFilter;
   }
 
+  public receivedRating: string | undefined;
+
   public set hotelFilter(filter: string) {
     this._hotelFilter = filter;
 
@@ -80,5 +82,9 @@ export class HotelListComponent implements OnInit {
     );
 
     return result;
+  }
+
+  public receiveRatingClicked(message: string) {
+    this.receivedRating = message;
   }
 }
