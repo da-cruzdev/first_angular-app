@@ -45,10 +45,20 @@
             {{ hotel.price | currency : "EUR" : "symbol" : "1.2-2" : "fr" }}
           </p>
 
-          <app-star-rating
-            [rating]="hotel.rating"
-            (starRatingClicked)="receiveRatingClicked($event)"
-          ></app-star-rating>
+          <div class="d-flex justify-content-between align-baseline">
+            <app-star-rating
+              [rating]="hotel.rating"
+              (starRatingClicked)="receiveRatingClicked($event)"
+            ></app-star-rating>
+
+            <span
+              class="material-icons bg-info text-white p-2 rounded-circle btn"
+              [routerLink]="['/hotels', hotel.hotelId]"
+            >
+              keyboard_arrow_right
+            </span>
+          </div>
+
           <span class="badge badge-pill badge-info" *ngIf="showBadge"
             >Nouveau</span
           >
