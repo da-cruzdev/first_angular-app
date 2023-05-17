@@ -1,1 +1,36 @@
-<p>hotel-detail works!</p>
+<div class="container">
+  <div class="card" *ngIf="hotel">
+    <div class="row g-0">
+      <div class="card-header text-white bg-info">
+        {{ hotel.hotelName | uppercase }}
+      </div>
+      <div class="col-md-4">
+        <img
+          [src]="hotel.imageUrl"
+          class="card-img"
+          [alt]="hotel.hotelName"
+          [title]="hotel.hotelName"
+        />
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+          <h5 class="card-title">Nom : {{ hotel.hotelName }}</h5>
+          <p class="card-text">Description : {{ hotel.description }}</p>
+          <div class="row">
+            <div class="col-md-6">
+              <p class="card-text">
+                Prix :
+                {{ hotel.price | currency : "EUR" : "symbol" : "1.2-2" : "fr" }}
+              </p>
+            </div>
+            <div class="col-md-6">
+              <p class="card-text">
+                <app-star-rating [rating]="hotel.rating"></app-star-rating>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
