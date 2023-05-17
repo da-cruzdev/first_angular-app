@@ -12,11 +12,16 @@
         <li class="nav-item" routerLinkActive="active">
           <a class="nav-link" [routerLink]="['/hotels']">Liste</a>
         </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" [routerLink]="['/hotels', '0', 'edit']"
+            >Ajout d'hotels</a
+          >
+        </li>
       </ul>
     </div>
   </div>
 </nav>
 
-<div class="mt-5 mb-5"></div>
-
-<router-outlet></router-outlet>
+<div class="mt-5 container">
+  <router-outlet></router-outlet>
+</div>
