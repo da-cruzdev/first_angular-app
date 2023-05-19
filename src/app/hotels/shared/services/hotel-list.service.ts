@@ -24,12 +24,18 @@ export class HotelListService {
     if (id === 0) {
       return of(this.getDefaultHotel());
     }
-    // this.getHotels().pipe(
-    //   map((hotels) => hotels.find((hotel) => hotel.id === id)),
-    //   filter((hotel) => !!hotel),
-    //   map((hotel) => hotel as IHotel)
-    // );
     return this.http.get<IHotel>(url).pipe(catchError(this.handleError));
+  }
+
+  public createHotel(hotel: IHotel): Observable<IHotel> {
+    const newHotel = {
+      ...hotel,
+      imageUrl: 'assets/img/hotel-room.jpg',
+      id: null,
+    };
+    return this.http
+      .post<IHotel>(this.HOTEL_API_URL, newHotel)
+      .pipe(catchError(this.handleError));
   }
 
   public updateHotel(hotel: IHotel): Observable<IHotel> {
