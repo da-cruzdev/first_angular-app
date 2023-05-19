@@ -86,4 +86,12 @@ export class HotelEditComponent implements OnInit {
     this.hotelForm.reset();
     this.router.navigate(['/hotels']);
   }
+
+  public deleteHotel() {
+    if (confirm(`Voulez-vous  réellement supprimer ${this.hotel.hotelName}?`)) {
+      this.hotelService.deleteHotel(this.hotel.id).subscribe({
+        next: () => this.saveCompleted(),
+      });
+    }
+  }
 }
