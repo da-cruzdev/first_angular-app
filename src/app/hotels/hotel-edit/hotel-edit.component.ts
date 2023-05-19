@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HotelListService } from '../shared/services/hotel-list.service';
 import { IHotel } from '../shared/models/hotel';
 
@@ -19,7 +19,8 @@ export class HotelEditComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
-    private hotelService: HotelListService
+    private hotelService: HotelListService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -62,6 +63,24 @@ export class HotelEditComponent implements OnInit {
   }
 
   public saveHotel(): void {
-    console.log(this.hotelForm.value);
+    if (this.hotelForm.valid) {
+      if (this.hotelForm.dirty) {
+        const hotel: IHotel = {
+          ...this.hotel,
+          ...this.hotelForm.value,
+        };
+        if (hotel.id === 0) {
+        } else {
+          this.hotelService.updateHotel(hotel).subscribe({
+            next: () => this.saveCompleted(),
+          });
+        }
+      }
+    }
+  }
+
+  public saveCompleted(): void {
+    this.hotelForm.reset();
+    this.router.navigate(['/hotels']);
   }
 }

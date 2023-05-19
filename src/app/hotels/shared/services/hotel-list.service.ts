@@ -20,14 +20,21 @@ export class HotelListService {
   }
 
   public getHotelById(id: number): Observable<IHotel> {
+    const url = `${this.HOTEL_API_URL}/ ${id}`;
     if (id === 0) {
       return of(this.getDefaultHotel());
     }
-    return this.getHotels().pipe(
-      map((hotels) => hotels.find((hotel) => hotel.id === id)),
-      filter((hotel) => !!hotel),
-      map((hotel) => hotel as IHotel)
-    );
+    // this.getHotels().pipe(
+    //   map((hotels) => hotels.find((hotel) => hotel.id === id)),
+    //   filter((hotel) => !!hotel),
+    //   map((hotel) => hotel as IHotel)
+    // );
+    return this.http.get<IHotel>(url).pipe(catchError(this.handleError));
+  }
+
+  public updateHotel(hotel: IHotel): Observable<IHotel> {
+    const url = `${this.HOTEL_API_URL}/${hotel.id}`;
+    return this.http.put<IHotel>(url, hotel).pipe(catchError(this.handleError));
   }
 
   private getDefaultHotel(): IHotel {
