@@ -66,9 +66,16 @@
             </span>
           </div>
 
-          <span class="badge badge-pill badge-info" *ngIf="showBadge"
-            >Nouveau</span
-          >
+          <ng-container *ngFor="let tag of hotel.tags; let i = index">
+            <ng-container *ngIf="showBadge">
+              <span
+                class="badge badge-pill"
+                [ngClass]="i % 2 === 0 ? 'badge-primary' : 'badge-secondary'"
+              >
+                {{ tag }}
+              </span>
+            </ng-container>
+          </ng-container>
         </div>
       </div>
     </div>

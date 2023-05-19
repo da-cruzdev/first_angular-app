@@ -80,6 +80,7 @@ export class HotelEditComponent implements OnInit {
       rating: this.hotel.rating,
       description: this.hotel.description,
     });
+    this.hotelForm.setControl('tags', this.fb.array(this.hotel.tags || []));
   }
 
   public saveHotel(): void {

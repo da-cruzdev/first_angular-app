@@ -12,7 +12,7 @@ export class HotelListComponent implements OnInit {
 
   public hotels: IHotel[] = [];
 
-  public showBadge: boolean | undefined;
+  public showBadge: boolean = true;
 
   private _hotelFilter = 'mot';
 
