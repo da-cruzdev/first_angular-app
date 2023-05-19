@@ -47,7 +47,7 @@ export class HotelEditComponent implements OnInit {
   public displayHotel(hotel: IHotel): void {
     this.hotel = hotel;
 
-    if (this.hotel.hotelId === 0) {
+    if (this.hotel.id === 0) {
       this.formTitle = 'Créer un hotel';
     } else {
       this.formTitle = `Modifier l'hotel ${this.hotel.hotelName}`;
