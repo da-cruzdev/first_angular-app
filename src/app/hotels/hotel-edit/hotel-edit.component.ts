@@ -17,7 +17,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HotelListService } from '../shared/services/hotel-list.service';
 import { IHotel } from '../shared/models/hotel';
 import { GlobalGenericValidator } from '../shared/validators/global-generique.validator';
-import { Observable, fromEvent, merge } from 'rxjs';
+import { EMPTY, Observable, fromEvent, merge, timer } from 'rxjs';
+import { debounce, debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-hotel-edit',
@@ -41,6 +42,7 @@ export class HotelEditComponent implements OnInit, AfterViewInit {
   public validationMessages: { [key: string]: { [key: string]: string } } = {
     hotelName: {
       required: "Le nom d'hotel est obligatoire",
+      minlength: "Le nom de l'hotel doit comporter au mons 4 caractères",
     },
     price: {
       required: "Le prix d'hotel est obligatoire",
@@ -48,6 +50,7 @@ export class HotelEditComponent implements OnInit, AfterViewInit {
   };
 
   private globalGenericValidator!: GlobalGenericValidator;
+  private isFormSubmitted!: boolean;
 
   constructor(
     private fb: FormBuilder,
@@ -61,7 +64,7 @@ export class HotelEditComponent implements OnInit, AfterViewInit {
       this.validationMessages
     );
     this.hotelForm = this.fb.group({
-      hotelName: ['', Validators.required],
+      hotelName: ['', [Validators.required, Validators.minLength(4)]],
       price: ['', Validators.required],
       rating: [''],
       description: [''],
@@ -77,17 +80,20 @@ export class HotelEditComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    const formControlBlurs: Observable<unknown>[] = this.inputElements.map(
+    const formControlBlurs: Observable<Event>[] = this.inputElements.map(
       (formControlElemRef: ElementRef) =>
         fromEvent(formControlElemRef.nativeElement, 'blur')
     );
 
-    merge(this.hotelForm.valueChanges, ...formControlBlurs).subscribe(() => {
-      this.formErrors = this.globalGenericValidator.createErrorMessage(
-        this.hotelForm
-      );
-      console.log('error===========================', this.formErrors);
-    });
+    merge(this.hotelForm.valueChanges, ...formControlBlurs)
+      .pipe(debounceTime(800))
+      .subscribe(() => {
+        this.formErrors = this.globalGenericValidator.createErrorMessage(
+          this.hotelForm,
+          this.isFormSubmitted
+        );
+        console.log('error===========================', this.formErrors);
+      });
   }
 
   public hideError(): void {
@@ -132,6 +138,11 @@ export class HotelEditComponent implements OnInit, AfterViewInit {
   }
 
   public saveHotel(): void {
+    this.isFormSubmitted = true;
+    this.hotelForm.updateValueAndValidity({
+      onlySelf: true,
+      emitEvent: true,
+    });
     if (this.hotelForm.valid) {
       if (this.hotelForm.dirty) {
         const hotel: IHotel = {
@@ -150,6 +161,8 @@ export class HotelEditComponent implements OnInit, AfterViewInit {
           });
         }
       }
+    } else {
+      this.errorMessage = "Corrigez les erreurs s'il vous plaît";
     }
   }
 
