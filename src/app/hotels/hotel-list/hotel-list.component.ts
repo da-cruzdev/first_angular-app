@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { IHotel } from '../shared/models/hotel';
 import { HotelListService } from '../shared/services/hotel-list.service';
-import { Observable, map, of } from 'rxjs';
+import { EMPTY, Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-hotel-list',
@@ -23,14 +24,15 @@ export class HotelListComponent implements OnInit {
 
   constructor(private readonly hotelListService: HotelListService) {}
   ngOnInit(): void {
-    this.hotels$ = this.hotelListService.getHotels();
+    this.hotels$ = this.hotelListService.getHotels().pipe(
+      catchError((err) => {
+        this.errMsg = err;
+        return EMPTY;
+      })
+    );
+
     this.filteredHotels$ = this.hotels$;
-    // this.hotelListService.getHotels().subscribe({
-    //   next: (hotels) => {
-    //     (this.hotels = hotels), (this.filteredHotels = this.hotels);
-    //   },
-    //   error: (err) => (this.errMsg = err),
-    // });
+
     this.hotelFilter = '';
   }
 
@@ -54,10 +56,6 @@ export class HotelListComponent implements OnInit {
     } else {
       this.filteredHotels$ = this.hotels$;
     }
-
-    // this.filteredHotels = this.hotelFilter
-    //   ? this.filterHotels(this.hotelFilter)
-    //   : this.hotels;
   }
 
   private filterHotels(criteria: string, hotels: IHotel[]): IHotel[] {
