@@ -22,7 +22,11 @@
             class="form-control"
             formControlName="hotelName"
             placeholder="Nom(Obligatoire)"
+            [ngClass]="{ 'is-invalid': formErrors['hotelName'] }"
           />
+          <span class="invalid-feedback">
+            {{ formErrors["hotelName"] }}
+          </span>
         </div>
       </div>
       <div class="form-group row mb-2">
