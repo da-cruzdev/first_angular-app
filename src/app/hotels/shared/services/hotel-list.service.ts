@@ -14,6 +14,15 @@ export class HotelListService {
 
   public getHotels(): Observable<IHotel[]> {
     return this.http.get<IHotel[]>(this.HOTEL_API_URL).pipe(
+      map((hotels: IHotel[]) =>
+        hotels.map(
+          (hotel) =>
+            ({
+              ...hotel,
+              price: hotel.price * 1.5,
+            } as IHotel)
+        )
+      ),
       tap((hotels) => console.log('hotels: ', hotels)),
       catchError(this.handleError)
     );
@@ -39,7 +48,7 @@ export class HotelListService {
   }
 
   public updateHotel(hotel: IHotel): Observable<IHotel> {
-    const url = `${this.HOTEL_API_URL}/${hotel.id}222`;
+    const url = `${this.HOTEL_API_URL}/${hotel.id}`;
     return this.http.put<IHotel>(url, hotel).pipe(catchError(this.handleError));
   }
 
