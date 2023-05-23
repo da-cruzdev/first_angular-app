@@ -1,8 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { IHotel } from '../shared/models/hotel';
 import { HotelListService } from '../shared/services/hotel-list.service';
-import { EMPTY, Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import {
+  BehaviorSubject,
+  EMPTY,
+  Observable,
+  Subject,
+  combineLatest,
+  of,
+} from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-hotel-list',
@@ -22,6 +29,8 @@ export class HotelListComponent implements OnInit {
 
   public filteredHotels$: Observable<IHotel[]> = of([]);
 
+  public filterSubject: Subject<string> = new BehaviorSubject<string>('');
+
   constructor(private readonly hotelListService: HotelListService) {}
   ngOnInit(): void {
     this.hotels$ = this.hotelListService.hotelsWithCategories$.pipe(
@@ -31,9 +40,16 @@ export class HotelListComponent implements OnInit {
       })
     );
 
-    this.filteredHotels$ = this.hotels$;
+    this.filteredHotels$ = this.createFilterHotels(
+      this.filterSubject,
+      this.hotels$
+    );
 
     this.hotelFilter = '';
+  }
+
+  public filterChange(value: string) {
+    this.filterSubject.next(value);
   }
 
   public toggleIsNewBadge(): void {
@@ -48,14 +64,26 @@ export class HotelListComponent implements OnInit {
 
   public set hotelFilter(filter: string) {
     this._hotelFilter = filter;
+  }
 
-    if (this.hotelFilter) {
-      this.filteredHotels$ = this.hotels$.pipe(
-        map((hotels: IHotel[]) => this.filterHotels(filter, hotels))
-      );
-    } else {
-      this.filteredHotels$ = this.hotels$;
-    }
+  public createFilterHotels(
+    filter$: Observable<string>,
+    hotels$: Observable<IHotel[]>
+  ): Observable<IHotel[]> {
+    return combineLatest(
+      hotels$,
+      filter$,
+      (hotels: IHotel[], filter: string) => {
+        if (filter === '') {
+          return hotels;
+        } else {
+          return hotels.filter(
+            (hotel: IHotel) =>
+              hotel.hotelName.toLocaleLowerCase().indexOf(filter) !== -1
+          );
+        }
+      }
+    );
   }
 
   private filterHotels(criteria: string, hotels: IHotel[]): IHotel[] {
