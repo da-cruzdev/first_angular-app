@@ -24,7 +24,7 @@ export class HotelListComponent implements OnInit {
 
   constructor(private readonly hotelListService: HotelListService) {}
   ngOnInit(): void {
-    this.hotels$ = this.hotelListService.getHotels().pipe(
+    this.hotels$ = this.hotelListService.hotelsWithCategories$.pipe(
       catchError((err) => {
         this.errMsg = err;
         return EMPTY;

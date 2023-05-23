@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, combineLatest, of, throwError } from 'rxjs';
 import { catchError, filter, map, tap } from 'rxjs/operators';
 import { IHotel } from '../models/hotel';
+import { Category } from '../models/category';
 
 @Injectable({
   providedIn: 'root',
@@ -10,19 +11,28 @@ import { IHotel } from '../models/hotel';
 export class HotelListService {
   private readonly HOTEL_API_URL = 'api/hotels';
 
+  public hotelsWithCategories$ = combineLatest([
+    this.getHotels(),
+    this.getCategories(),
+  ]).pipe(
+    map(([hotels, categories]) =>
+      hotels.map(
+        (hotel) =>
+          ({
+            ...hotel,
+            price: hotel.price * 1.5,
+            category: categories.find(
+              (category) => category.id === hotel.categoryId
+            )?.name,
+          } as IHotel)
+      )
+    )
+  );
+
   constructor(private http: HttpClient) {}
 
   public getHotels(): Observable<IHotel[]> {
     return this.http.get<IHotel[]>(this.HOTEL_API_URL).pipe(
-      map((hotels: IHotel[]) =>
-        hotels.map(
-          (hotel) =>
-            ({
-              ...hotel,
-              price: hotel.price * 1.5,
-            } as IHotel)
-        )
-      ),
       tap((hotels) => console.log('hotels: ', hotels)),
       catchError(this.handleError)
     );
@@ -66,6 +76,19 @@ export class HotelListService {
       rating: 0,
       imageUrl: '',
     };
+  }
+
+  public getCategories(): Observable<Category[]> {
+    return of([
+      {
+        id: 0,
+        name: 'Motel',
+      },
+      {
+        id: 1,
+        name: 'Auberge',
+      },
+    ]);
   }
 
   private handleError(error: HttpErrorResponse) {
